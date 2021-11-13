@@ -5,6 +5,7 @@ namespace Behat\Mink\Tests\Driver;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use PHPUnit\Runner\Version;
+use Throwable;
 
 if (class_exists('PHPUnit\Runner\Version') && version_compare(Version::id(), '6.0.0', '>=')) {
     /**
@@ -17,13 +18,13 @@ if (class_exists('PHPUnit\Runner\Version') && version_compare(Version::id(), '6.
      */
     class SkippingUnsupportedTestCase extends BaseTestCase
     {
-        protected function onNotSuccessfulTest(\Throwable $e)
+        protected function onNotSuccessfulTest(Throwable $t): void
         {
-            if ($e instanceof eUnsupportedDriverActionException) {
-                $this->markTestSkipped($e->getMessage());
+            if ($t instanceof UnsupportedDriverActionException) {
+                $this->markTestSkipped($t->getMessage());
             }
 
-            parent::onNotSuccessfulTest($e);
+            parent::onNotSuccessfulTest($t);
         }
     }
 } elseif (version_compare(\PHPUnit_Runner_Version::id(), '5.0.0', '>=')) {
